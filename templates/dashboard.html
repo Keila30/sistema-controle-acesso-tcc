@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <title>Dashboard</title>
+</head>
+<body>
+    <h2>Bem-vindo, {{ usuario }}</h2>
+    <p>Perfil: {{ perfil }}</p>
+
+    {% if perfil == "operador" %}
+        <h3>Solicitar Arquivo</h3>
+        <form method="POST" action="/solicitar">
+            <input type="text" name="pedido" placeholder="Ex: Mapa de plantio - Talhão 3" required>
+            <button type="submit">Solicitar</button>
+        </form>
+    {% endif %}
+
+    {% if perfil == "admin" %}
+        <h3>Solicitações Recebidas</h3>
+        <ul>
+            {% for s in solicitacoes %}
+                <li>
+                    <strong>{{ s.usuario }}</strong>: {{ s.pedido }}
+                </li>
+            {% else %}
+                <li>Nenhuma solicitação registrada.</li>
+            {% endfor %}
+        </ul>
+    {% endif %}
+
+    <br>
+    <a href="/logout">Sair</a>
+</body>
+</html>
+
