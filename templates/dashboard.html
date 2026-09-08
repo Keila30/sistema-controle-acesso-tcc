@@ -8,6 +8,12 @@
     <h2>Bem-vindo, {{ usuario }}</h2>
     <p>Perfil: {{ perfil }}</p>
 
+    {% with mensagens = get_flashed_messages(with_categories=true) %}
+        {% for categoria, mensagem in mensagens %}
+            <p class="{{ categoria }}">{{ mensagem }}</p>
+        {% endfor %}
+    {% endwith %}
+
     {% if perfil == "operador" %}
         <h3>Solicitar Arquivo</h3>
         <form method="POST" action="/solicitar">
