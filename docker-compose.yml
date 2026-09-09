@@ -9,7 +9,7 @@ services:
     environment:
       SECRET_KEY: ${SECRET_KEY:-dev-only-change-this-secret-key}
       FLASK_DEBUG: "0"
-      DATABASE_URL: postgresql://${POSTGRES_USER:-controle}:${POSTGRES_PASSWORD:-controle_dev}@db:5432/${POSTGRES_DB:-controle_acesso}
+      DATABASE_URL: postgresql+psycopg://${POSTGRES_USER:-controle}:${POSTGRES_PASSWORD:-controle_dev}@db:5432/${POSTGRES_DB:-controle_acesso}
     depends_on:
       db:
         condition: service_healthy
