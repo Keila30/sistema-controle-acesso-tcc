@@ -2,25 +2,59 @@
 <html lang="pt-br">
 <head>
     <meta charset="UTF-8">
-    <title>Login - Controle de Acesso</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Entrar - KL Systems</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
 </head>
 <body>
-    <h2>Sistema de Controle de Acesso</h2>
+    <div class="login">
+        {# painel lateral com linhas de relevo, lembrando mapas de campo #}
+        <aside class="login-aside">
+            <svg viewBox="0 0 400 600" preserveAspectRatio="xMidYMid slice" aria-hidden="true" focusable="false">
+                <defs>
+                    <path id="onda" d="M-40 120 C 40 60, 110 150, 190 100 S 330 40, 440 110" fill="none" stroke="currentColor" stroke-width="1.4"/>
+                </defs>
+                <use href="#onda"/>
+                <use href="#onda" y="42"/>
+                <use href="#onda" y="84"/>
+                <use href="#onda" y="126"/>
+                <use href="#onda" y="168"/>
+                <use href="#onda" y="210"/>
+                <use href="#onda" y="252"/>
+                <use href="#onda" y="294"/>
+                <use href="#onda" y="336"/>
+                <use href="#onda" y="378"/>
+                <use href="#onda" y="420"/>
+                <use href="#onda" y="462"/>
+                <use href="#onda" y="504"/>
+            </svg>
+            <h1>KL Systems</h1>
+            <p>Controle de acesso aos mapas e arquivos de campo.</p>
+        </aside>
 
-    {% with mensagens = get_flashed_messages(with_categories=true) %}
-        {% for categoria, mensagem in mensagens %}
-            <p class="{{ categoria }}">{{ mensagem }}</p>
-        {% endfor %}
-    {% endwith %}
+        <main class="login-main">
+            <div class="login-box">
+                <h2>Entrar</h2>
 
-    <form method="POST" action="/">
-        <label>Usuário:</label><br>
-        <input type="text" name="usuario" required><br><br>
+                {% with mensagens = get_flashed_messages(with_categories=true) %}
+                    {% for categoria, mensagem in mensagens %}
+                        <p class="msg {{ categoria }}">{{ mensagem }}</p>
+                    {% endfor %}
+                {% endwith %}
 
-        <label>Senha:</label><br>
-        <input type="password" name="senha"><br><br>
-
-        <button type="submit">Entrar</button>
-    </form>
+                <form method="POST" action="/">
+                    <div class="campo">
+                        <label for="usuario">Usuário</label>
+                        <input type="text" id="usuario" name="usuario" autocomplete="username" autofocus required>
+                    </div>
+                    <div class="campo">
+                        <label for="senha">Senha</label>
+                        <input type="password" id="senha" name="senha" autocomplete="current-password" required>
+                    </div>
+                    <button type="submit" class="btn">Entrar</button>
+                </form>
+            </div>
+        </main>
+    </div>
 </body>
 </html>

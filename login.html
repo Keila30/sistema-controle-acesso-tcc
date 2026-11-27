@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <title>Login - Controle de Acesso</title>
+</head>
+<body>
+    <h2>Sistema de Controle de Acesso</h2>
+
+    {% with mensagens = get_flashed_messages(with_categories=true) %}
+        {% for categoria, mensagem in mensagens %}
+            <p class="{{ categoria }}">{{ mensagem }}</p>
+        {% endfor %}
+    {% endwith %}
+
+    <form method="POST" action="/">
+        <label>Usuário:</label><br>
+        <input type="text" name="usuario" required><br><br>
+
+        <label>Senha:</label><br>
+        <input type="password" name="senha"><br><br>
+
+        <button type="submit">Entrar</button>
+    </form>
+</body>
+</html>

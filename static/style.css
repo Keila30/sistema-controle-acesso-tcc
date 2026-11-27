@@ -1,0 +1,177 @@
+/* KL Systems - tema verde agro */
+:root {
+    --mata: #1f3d2b;
+    --folha: #3e7c4f;
+    --folha-esc: #2f6340;
+    --brotos: #e3ecdf;
+    --fundo: #f2f5ef;
+    --tinta: #17231b;
+    --suave: #5b6b5f;
+    --linha: #d5dfd0;
+    --trigo: #b88a1e;
+    --erro: #a63d2f;
+}
+
+* { box-sizing: border-box; }
+
+body {
+    margin: 0;
+    background: var(--fundo);
+    color: var(--tinta);
+    font: 16px/1.55 "Segoe UI", system-ui, sans-serif;
+}
+
+h1, h2, h3, .brand {
+    font-family: "Palatino Linotype", Palatino, Georgia, serif;
+    font-weight: 700;
+    line-height: 1.2;
+    margin: 0;
+}
+
+a { color: var(--folha-esc); }
+:focus-visible { outline: 3px solid var(--trigo); outline-offset: 2px; }
+
+/* Botões e campos */
+.btn {
+    background: var(--folha);
+    color: #fff;
+    border: 0;
+    border-radius: 6px;
+    padding: .6rem 1.1rem;
+    font: inherit;
+    font-weight: 600;
+    cursor: pointer;
+}
+.btn:hover { background: var(--folha-esc); }
+.btn-excluir {
+    background: transparent;
+    color: var(--erro);
+    border: 1px solid currentColor;
+    border-radius: 6px;
+    padding: .2rem .7rem;
+    font: inherit;
+    font-size: .875rem;
+    cursor: pointer;
+}
+.btn-excluir:hover { background: var(--erro); color: #fff; }
+
+label { display: block; font-weight: 600; margin-bottom: .3rem; }
+input[type="text"], input[type="password"] {
+    width: 100%;
+    padding: .65rem .8rem;
+    border: 1px solid var(--linha);
+    border-radius: 6px;
+    font: inherit;
+    background: #fff;
+}
+.campo { margin-bottom: 1.1rem; }
+
+/* Mensagens */
+.msg {
+    padding: .7rem 1rem;
+    border-left: 4px solid;
+    border-radius: 4px;
+    margin: 0 0 1.2rem;
+    background: #fff;
+}
+.msg.success { border-color: var(--folha); background: var(--brotos); }
+.msg.error { border-color: var(--erro); background: #f8e7e3; }
+
+/* Login */
+.login { display: grid; grid-template-columns: 1.1fr 1fr; min-height: 100vh; }
+.login-aside {
+    background: var(--mata);
+    color: #fff;
+    position: relative;
+    overflow: hidden;
+    padding: 3rem;
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-end;
+}
+.login-aside svg {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    color: rgba(255, 255, 255, .16);
+}
+.login-aside h1, .login-aside p { position: relative; }
+.login-aside h1 { font-size: 2.2rem; }
+.login-aside p { margin: .5rem 0 0; max-width: 28ch; color: #cfe0d2; }
+.login-main { display: flex; align-items: center; justify-content: center; padding: 2rem; }
+.login-box { width: 100%; max-width: 360px; }
+.login-box h2 { font-size: 1.7rem; margin-bottom: 1.4rem; }
+.login-box .btn { width: 100%; }
+
+/* Dashboard */
+.topbar {
+    background: var(--mata);
+    color: #fff;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    flex-wrap: wrap;
+    gap: 1rem;
+    padding: .9rem 1.5rem;
+}
+.brand { font-size: 1.25rem; }
+.who { display: flex; align-items: center; gap: .9rem; font-size: .95rem; }
+.who a { color: #fff; }
+.perfil { background: var(--folha); padding: .15rem .65rem; border-radius: 999px; font-size: .8rem; }
+
+main { max-width: 880px; margin: 2rem auto; padding: 0 1.25rem; }
+main h1 { font-size: 1.7rem; }
+.intro { color: var(--suave); margin: .3rem 0 1.4rem; }
+.panel { background: #fff; border: 1px solid var(--linha); border-radius: 8px; padding: 1.5rem; }
+
+.row-form { display: flex; gap: .6rem; flex-wrap: wrap; }
+.row-form input[type="text"] { flex: 1 1 260px; width: auto; }
+
+.pedidos { list-style: none; margin: 0; padding: 0; }
+.pedido { padding: 1.1rem 0; border-top: 1px solid var(--linha); }
+.pedido:first-child { border-top: 0; padding-top: 0; }
+.pedido:last-child { padding-bottom: 0; }
+.pedido-topo { display: flex; justify-content: space-between; align-items: baseline; gap: 1rem; flex-wrap: wrap; }
+.pedido h3 { font-size: 1.1rem; }
+.quem { color: var(--suave); font-size: .9rem; }
+.status { font-size: .8rem; padding: .1rem .65rem; border-radius: 999px; background: #f5ecd2; color: #6d5210; }
+.upload { margin-top: .7rem; display: flex; gap: .6rem; flex-wrap: wrap; align-items: center; }
+.arquivos { list-style: none; margin: .7rem 0 0; padding: 0; }
+.arquivos li { display: flex; align-items: center; gap: .7rem; padding: .35rem 0; font-size: .95rem; }
+.arquivos form { margin: 0; }
+.vazio { color: var(--suave); margin: 0; }
+
+@media (max-width: 760px) {
+    .login { grid-template-columns: 1fr; }
+    .login-aside { min-height: 180px; padding: 1.5rem; }
+    .login-aside h1 { font-size: 1.6rem; }
+}
+
+/* Status, decisão e links de arquivo */
+.status-pendente { background: #f5ecd2; color: #6d5210; }
+.status-aprovado { background: #dcebd9; color: #245232; }
+.status-negado { background: #f3dcd7; color: #8a2f23; }
+.secao { font-size: 1.3rem; margin: 2rem 0 .8rem; }
+.decisao { margin-top: .7rem; display: flex; gap: .6rem; }
+a.btn { display: inline-block; text-decoration: none; }
+.btn-sec { background: transparent; color: var(--folha-esc); border: 1px solid var(--folha); }
+.btn-sec:hover { background: var(--brotos); }
+.arquivos li { flex-wrap: wrap; }
+.arquivos a.btn { padding: .3rem .8rem; font-size: .875rem; }
+.baixado { color: var(--suave); font-size: .85rem; }
+
+/* Escolha do arquivo e biblioteca */
+select {
+    width: 100%;
+    padding: .65rem .8rem;
+    border: 1px solid var(--linha);
+    border-radius: 6px;
+    font: inherit;
+    background: #fff;
+}
+.row-form select { flex: 1 1 260px; width: auto; }
+.decisao { flex-wrap: wrap; align-items: center; }
+.decisao form { display: flex; gap: .6rem; margin: 0; }
+.upload.sem-margem { margin-top: 0; }
+.panel > .arquivos { margin-top: 1rem; }

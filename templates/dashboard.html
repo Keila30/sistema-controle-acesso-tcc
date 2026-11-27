@@ -2,41 +2,142 @@
 <html lang="pt-br">
 <head>
     <meta charset="UTF-8">
-    <title>Dashboard</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Painel - KL Systems</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
 </head>
 <body>
-    <h2>Bem-vindo, {{ usuario }}</h2>
-    <p>Perfil: {{ perfil }}</p>
+    <header class="topbar">
+        <span class="brand">KL Systems</span>
+        <div class="who">
+            <span>{{ usuario }}</span>
+            <span class="perfil">{{ perfil }}</span>
+            <a href="/logout">Sair</a>
+        </div>
+    </header>
 
-    {% with mensagens = get_flashed_messages(with_categories=true) %}
-        {% for categoria, mensagem in mensagens %}
-            <p class="{{ categoria }}">{{ mensagem }}</p>
-        {% endfor %}
-    {% endwith %}
-
-    {% if perfil == "operador" %}
-        <h3>Solicitar Arquivo</h3>
-        <form method="POST" action="/solicitar">
-            <input type="text" name="pedido" placeholder="Ex: Mapa de plantio - Talhão 3" required>
-            <button type="submit">Solicitar</button>
-        </form>
-    {% endif %}
-
-    {% if perfil == "admin" %}
-        <h3>Solicitações Recebidas</h3>
-        <ul>
-            {% for s in solicitacoes %}
-                <li>
-                    <strong>{{ s.usuario }}</strong>: {{ s.pedido }}
-                </li>
-            {% else %}
-                <li>Nenhuma solicitação registrada.</li>
+    <main>
+        {% with mensagens = get_flashed_messages(with_categories=true) %}
+            {% for categoria, mensagem in mensagens %}
+                <p class="msg {{ categoria }}">{{ mensagem }}</p>
             {% endfor %}
-        </ul>
-    {% endif %}
+        {% endwith %}
 
-    <br>
-    <a href="/logout">Sair</a>
+        {# ================= OPERADOR ================= #}
+        {% if perfil == "operador" %}
+            <h1>Solicitar arquivo</h1>
+            <p class="intro">Escolha o mapa de que você precisa. O administrador vai analisar o pedido.</p>
+            <div class="panel">
+                {% if arquivos %}
+                    <form method="POST" action="/solicitar" class="row-form">
+                        <select name="arquivo_id" aria-label="Arquivo solicitado" required>
+                            <option value="" disabled selected>Escolha um arquivo...</option>
+                            {% for a in arquivos %}
+                                <option value="{{ a.id }}">{{ a.nome_arquivo }}</option>
+                            {% endfor %}
+                        </select>
+                        <button type="submit" class="btn">Solicitar arquivo</button>
+                    </form>
+                {% else %}
+                    <p class="vazio">Ainda não há arquivos disponíveis. Peça ao administrador para cadastrar os mapas.</p>
+                {% endif %}
+            </div>
+
+            <h2 class="secao">Minhas solicitações</h2>
+            <div class="panel">
+                <ul class="pedidos">
+                    {% for s in solicitacoes %}
+                        <li class="pedido">
+                            <div class="pedido-topo">
+                                <h3>{{ s.arquivo.nome_arquivo }}</h3>
+                                <span class="status status-{{ s.status }}">{{ s.status|capitalize }}</span>
+                            </div>
+
+                            {% if s.status == "aprovado" %}
+                                <ul class="arquivos">
+                                    <li>
+                                        <span>📄 {{ s.arquivo.nome_arquivo }}</span>
+                                        <a class="btn btn-sec" href="{{ url_for('visualizar_solicitacao', solicitacao_id=s.id) }}" target="_blank" rel="noopener">Visualizar</a>
+                                        <a class="btn" href="{{ url_for('baixar_solicitacao', solicitacao_id=s.id) }}">Baixar</a>
+                                    </li>
+                                </ul>
+                            {% elif s.status == "negado" %}
+                                <p class="vazio">Esta solicitação foi negada.</p>
+                            {% else %}
+                                <p class="vazio">Aguardando análise do administrador.</p>
+                            {% endif %}
+                        </li>
+                    {% else %}
+                        <li class="vazio">Você ainda não fez nenhuma solicitação.</li>
+                    {% endfor %}
+                </ul>
+            </div>
+        {% endif %}
+
+        {# ================= ADMINISTRADOR ================= #}
+        {% if perfil == "admin" %}
+            <h1>Solicitações recebidas</h1>
+            <p class="intro">O arquivo já está na biblioteca: basta aprovar ou negar cada pedido.</p>
+            <div class="panel">
+                <ul class="pedidos">
+                    {% for s in solicitacoes %}
+                        <li class="pedido">
+                            <div class="pedido-topo">
+                                <h3>{{ s.arquivo.nome_arquivo }}</h3>
+                                <span class="status status-{{ s.status }}">{{ s.status|capitalize }}</span>
+                            </div>
+                            <div class="quem">Solicitado por {{ s.usuario.nome }}</div>
+
+                            <div class="decisao">
+                                {% if s.status == "pendente" %}
+                                    <form method="POST" action="{{ url_for('decidir_solicitacao', solicitacao_id=s.id) }}">
+                                        <button type="submit" name="acao" value="aprovar" class="btn">Aprovar</button>
+                                        <button type="submit" name="acao" value="negar" class="btn-excluir">Negar</button>
+                                    </form>
+                                {% endif %}
+                                <a class="btn btn-sec" href="{{ url_for('visualizar_arquivo', arquivo_id=s.arquivo_id) }}" target="_blank" rel="noopener">Visualizar</a>
+                            </div>
+
+                            {% if s.status == "aprovado" %}
+                                <div class="baixado">
+                                    {% if s.baixado_em %}
+                                        ✔ Baixado pelo operador em {{ s.baixado_em|data_br }}
+                                    {% else %}
+                                        Ainda não baixado pelo operador
+                                    {% endif %}
+                                </div>
+                            {% endif %}
+                        </li>
+                    {% else %}
+                        <li class="vazio">Nenhuma solicitação ainda. Quando um operador pedir um arquivo, ela aparece aqui.</li>
+                    {% endfor %}
+                </ul>
+            </div>
+
+            <h2 class="secao">Biblioteca de mapas</h2>
+            <p class="intro">Envie cada PDF uma única vez. Os operadores escolhem entre estes arquivos ao solicitar.</p>
+            <div class="panel">
+                <form method="POST" action="{{ url_for('enviar_para_biblioteca') }}" enctype="multipart/form-data" class="upload sem-margem">
+                    <input type="file" name="arquivo" accept=".pdf" aria-label="Escolher PDF" required>
+                    <button type="submit" class="btn">Adicionar à biblioteca</button>
+                </form>
+
+                <ul class="arquivos">
+                    {% for a in arquivos %}
+                        <li>
+                            <span>📄 {{ a.nome_arquivo }}</span>
+                            <span class="baixado">{{ a.tamanho_bytes|tamanho }}</span>
+                            <a class="btn btn-sec" href="{{ url_for('visualizar_arquivo', arquivo_id=a.id) }}" target="_blank" rel="noopener">Visualizar</a>
+                            <form method="POST" action="{{ url_for('excluir_da_biblioteca', arquivo_id=a.id) }}" onsubmit="return confirm('Excluir este arquivo da biblioteca?');">
+                                <button type="submit" class="btn-excluir">Excluir</button>
+                            </form>
+                        </li>
+                    {% else %}
+                        <li class="vazio">A biblioteca está vazia. Envie o primeiro PDF acima.</li>
+                    {% endfor %}
+                </ul>
+            </div>
+        {% endif %}
+    </main>
 </body>
 </html>
-
